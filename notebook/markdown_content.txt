@@ -1,0 +1,182 @@
+﻿# Projeto: SegmentaþÒo de Clientes de CartÒo de CrÚdito
+
+### **Objetivo do Projeto**
+O principal objetivo deste projeto Ú desenvolver um modelo de agrupamento (**Clustering**) para segmentar a base de clientes de uma operadora de cart§es de crÚdito. AtravÚs da anßlise de comportamentos de uso, padr§es de gastos e hßbitos de pagamento, buscamos identificar perfis distintos (Personas) que permitam:
+
+1.  **Entender o Perfil de Consumo:** Diferenciar clientes que usam o cartÒo para compras dißrias daqueles que o utilizam como linha de crÚdito emergencial (saques).
+2.  **GestÒo de Risco:** Identificar grupos com alta utilizaþÒo de limite e baixas taxas de pagamento para mitigar inadimplÛncia.
+3.  **EstratÚgias de Marketing:** Personalizar ofertas e limites de acordo com a necessidade de cada segmento.
+4.  **Aumento de Engajamento:** Criar aþ§es para reativar clientes inativos ou incentivar o uso de transaþ§es Ó vista/parceladas conforme o perfil identificado.
+
+Este notebook percorre desde a anßlise explorat¾ria e tratamento de dados atÚ a validaþÒo dos clusters usando tÚcnicas de **Explainable AI (SHAP)**.
+---
+##Dataset utilizado
+
+[Credit Card Dataset for Clustering](https://www.kaggle.com/datasets/arjunbhasin2013/ccdata)
+---
+##Bibliotecas instaladas
+---
+##Bibliotecas utilizadas
+---
+##Carregando e limpando Dataset
+---
+##Testes de hip¾teses para verificar diferenþas entre grupos
+---
+Hip¾tese 1: Pagamento Integral vs. Limite de CrÚdito
+
+* $H_0$ (Nula): A mÚdia do limite de crÚdito dos clientes que pagam a maior parte da fatura Ú igual Ó dos que pagam o mÝnimo.
+
+* $H_1$ (Alternativa): Existe uma diferenþa significativa na mÚdia do limite de crÚdito entre esses dois grupos.
+---
+Hip¾tese 2: Saque Emergencial vs. Volume de Compras
+
+* $H_0$ (Nula): Clientes que fazem saque em dinheiro gastam em compras no cartÒo a mesma quantia mÚdia que os clientes que nÒo fazem saque.
+
+* $H_1$ (Alternativa): Existe uma diferenþa significativa no volume mÚdio de compras entre quem faz e quem nÒo faz saque.
+---
+Hip¾tese 3: Tempo de Conta (Fidelidade) vs. Saldo Devedor
+
+* $H_0$ (Nula): O saldo devedor mÚdio dos clientes mais antigos (12 meses) Ú igual ao dos clientes mais recentes (< 12 meses).
+
+* $H_1$ (Alternativa): Existe uma diferenþa significativa no saldo devedor mÚdio com base na fidelidade do cliente.
+---
+## Matriz de correlaþÒo para verificar correlaþÒo entre as varißveis
+---
+### RemoþÒo de Colunas Colineares
+Com base na anßlise da matriz de correlaþÒo, vamos remover colunas que representam informaþ§es redundantes para evitar viÚs no algoritmo de clustering.
+---
+## Feature engineering
+---
+## DivisÒo dos Dados (Train, Val, Test) e Escalonamento
+---
+## MÚtodo do Cotovelo (Elbow Method) e Silhouette Score para definir o n·mero de clusters
+---
+Hß uma queda em K=6 no mÚtodo do cotovelo e o Silhouette Score tem seu pico em K=6, isso sugere que a quantidade de grupos ideais sÒo 6
+---
+##ComparaþÒo de Algoritmos com valores padrÒo (K-Means vs. Hierßrquico vs. DBSCAN)
+---
+## Otimizando KMeans com Optuna
+---
+Melhor resultado:
+
+Silhouette Score na ValidaþÒo: 0.3242
+
+HiperparÔmetros Encontrados:
+  - n_clusters: 6
+  - init: random
+  - n_init: 25
+  - max_iter: 473
+---
+## Visualizando os resultados
+---
+Ap¾s 6 grupos (0 atÚ 5) ele para de criar novos grupos se tornando linear
+---
+##Visualizando os 6 grupos
+---
+Vemos que os grupos apesar de estarem bem pr¾ximos estÒo bem definidos, com o grupo 0 tendo a maior quantidade de consumidores, sendo provavelmente o grupo padrÒo
+---
+##Matriz de ConfusÒo com dados de Teste
+---
+* **Performance do Random Forest (97% de PrecisÒo)**: O modelo aprendeu os clusters e acertou 97%, isso prova que os grupos criados pelo K-Means nÒo sÒo aleat¾rios. Eles possuem regras claras e bem definidas baseadas nos dados (como limite, gastos e pagamentos).
+
+* **A Matriz de ConfusÒo**: Ela estß quase toda na diagonal, o que Ú o cenßrio ideal. Isso significa que o modelo raramente confunde os tipos de cliente.
+
+* **DistribuiþÒo dos Grupos**: Vemos que o Cluster 0 Ú a maior parte do p·blico, enquanto grupos como o Cluster 2 e 3 sÒo menores e mais especÝficos.
+---
+### Perfilamento dos Grupos (Cluster Profiling)
+Analisando as mÚdias originais (nÒo escalonadas) de cada cluster para entender o comportamento real de cada segmento de cliente.
+---
+## Personas dos Segmentos Identificados
+
+| Cluster | Nome Sugerido | Perfil de Comportamento |
+| :--- | :--- | :--- |
+| **0** | **Consumidor Equilibrado** | Um grupo de perfil misto, cujo comportamento Ú moldado pela combinaþÒo de manter saldo frequente, fazer pagamentos integrais e realizar compras Ó vista. |
+| **1** | **Cliente do Rotativo** | Clientes definidos quase que inteiramente pela frequÛncia com que deixam saldo rotativo acumulado no cartÒo. |
+| **2** | **Sacador de EmergÛncia** | O grupo focado em liquidez de emergÛncia, caracterizado fortemente pelo uso do limite de crÚdito para saques em dinheiro. |
+| **3** | **Cliente Veterano** | Clientes cujo diferencial e principal critÚrio de agrupamento Ú o tempo de relacionamento e idade da conta. |
+| **4** | **Comprador Ativo** | Consumidores altamente ativos, definidos pelo grande volume e alta frequÛncia de compras em parcela ·nica. |
+| **5** | **Pagador Integral** | Os tÝpicos "bons pagadores", isolados no grupo pela sua consistÛncia inabalßvel em sempre pagar o valor total da fatura. |
+---
+## Explainable AI (SHAP)
+---
+### Por que cada cliente foi para seu grupo? (SHAP Global e por Cluster)
+O grßfico abaixo mostra quais varißveis foram mais decisivas para o modelo conseguir separar os clientes nos 6 grupos identificados.
+---
+### Fatores de InfluÛncia por Categoria (Personas)
+Abaixo, vemos os principais drivers para cada um dos 6 grupos. Isso explica a l¾gica por trßs de cada nome que demos.
+---
+## Personas dos Segmentos Identificados
+
+| Cluster | Nome Sugerido | Perfil de Comportamento |
+| :--- | :--- | :--- |
+| **0** | **Consumidor Equilibrado** | Um grupo de perfil misto, cujo comportamento Ú moldado pela combinaþÒo de manter saldo frequente, fazer pagamentos integrais e realizar compras Ó vista. |
+| **1** | **Cliente do Rotativo** | Clientes definidos quase que inteiramente pela frequÛncia com que deixam saldo rotativo acumulado no cartÒo. |
+| **2** | **Sacador de EmergÛncia** | O grupo focado em liquidez de emergÛncia, caracterizado fortemente pelo uso do limite de crÚdito para saques em dinheiro. |
+| **3** | **Cliente Veterano** | Clientes cujo diferencial e principal critÚrio de agrupamento Ú o tempo de relacionamento e idade da conta. |
+| **4** | **Comprador Ativo** | Consumidores altamente ativos, definidos pelo grande volume e alta frequÛncia de compras em parcela ·nica. |
+| **5** | **Pagador Integral** | Os tÝpicos "bons pagadores", isolados no grupo pela sua consistÛncia inabalßvel em sempre pagar o valor total da fatura. |
+---
+##A definiþÒo de cada cluster e as varißveis que os dominam:
+
+### **Cluster 0 - Consumidor Equilibrado:**
+
+Este cluster possui uma distribuiþÒo mais equilibrada de importÔncia entre vßrias caracterÝsticas, mas Ú liderado por trÛs comportamentos de uso e pagamento:
+
+* **BALANCE_FREQUENCY:** FrequÛncia com que o saldo Ú mantido ou atualizado (indica se o cliente costuma deixar saldo no cartÒo frequentemente).
+* **PRC_FULL_PAYMENT:** Percentual de meses em que o cliente pagou o valor total da fatura.
+* **ONEOFF_PURCHASES_FREQUENCY:** FrequÛncia com que o cliente realiza compras Ó vista (em parcela ·nica).
+
+### **Cluster 1 - Cliente do Rotativo:**
+
+O Cluster 1 Ú **fortemente dominado** por uma ·nica varißvel, que isola o comportamento deste grupo:
+
+* **BALANCE_FREQUENCY:** FrequÛncia de manutenþÒo de saldo na conta. A diferenþa no impacto desta varißvel para as demais Ú massiva, indicando que este grupo Ú definido quase inteiramente pela constÔncia (ou falta dela) em ter um saldo rotativo no cartÒo.
+
+### **Cluster 2 - Sacador de EmergÛncia:**
+
+Este cluster representa um perfil muito especÝfico de uso de crÚdito emergencial ou liquidez:
+
+* **CASH_ADVANCE:** Valor de saques em dinheiro realizados com o cartÒo de crÚdito. ╔ a caracterÝstica absoluta que define este grupo.
+* **CREDIT_LIMIT:** Limite de crÚdito do cliente (aparece em segundo lugar, sugerindo que o acesso ao limite dita o quanto podem sacar).
+
+### **Cluster 3 - Cliente Veterano:**
+
+O Cluster 3 Ú caracterizado majoritariamente pela lealdade ou idade da conta:
+
+* **TENURE:** Tempo de relacionamento (em meses) do cliente com o serviþo de cartÒo de crÚdito. Este Ú o fator decisivo para agrupar esses clientes, separando, por exemplo, clientes muito novos de clientes antigos.
+
+### **Cluster 4 - Comprador Ativo:**
+
+O Cluster 4 agrupa os consumidores ativos com foco em volume de transaþ§es e compras sem parcelamento:
+
+* **ONEOFF_PURCHASES_FREQUENCY:** FrequÛncia de compras Ó vista (pagamento ·nico).
+* **PURCHASES:** Volume (valor total) de compras realizadas.
+* *(Estes clientes sÒo definidos pelo alto engajamento em usar o cartÒo para compras do dia a dia ou grandes compras nÒo parceladas).*
+
+### **Cluster 5 - Pagador Integral:**
+
+O Cluster 5 define o comportamento do "bom pagador" ou *transactor* (quem usa o cartÒo por conveniÛncia e nÒo para tomar crÚdito):
+
+* **PRC_FULL_PAYMENT:** Percentual de pagamento integral da fatura. A dominÔncia gigantesca desta varißvel indica que este cluster Ú formado por clientes definidos primariamente pelo hßbito de nÒo deixar saldo rotativo, pagando sempre (ou quase sempre) 100% do que devem.
+---
+## **ConclusÒo Final do Projeto**
+
+Este projeto demonstrou a aplicaþÒo bem-sucedida de tÚcnicas de **Aprendizado NÒo Supervisionado** para a segmentaþÒo estratÚgica de uma base de clientes de cart§es de crÚdito. AtravÚs do algoritmo **K-Means** (otimizado via Optuna) e da validaþÒo via **Explainable AI (SHAP)**, conseguimos transformar dados brutos em 6 perfis comportamentais distintos e acionßveis.
+
+### **Principais Resultados:**
+*   **ConsistÛncia dos Segmentos:** A precisÒo de **97%** obtida pelo classificador Random Forest confirmou que os grupos identificados nÒo sÒo aleat¾rios, mas possuem padr§es matemßticos robustos.
+*   **IdentificaþÒo de Oportunidades:** Segmentamos desde o 'Pagador Integral' (baixo risco, alta conveniÛncia) atÚ o 'Cliente do Rotativo' e 'Sacador de EmergÛncia', permitindo que a operadora ajuste suas taxas e ofertas de forma personalizada.
+*   **MitigaþÒo de Risco:** O mapeamento do grupo de risco (alta utilizaþÒo de limite e baixo pagamento) oferece uma ferramenta preventiva contra a inadimplÛncia.
+
+### **Pr¾ximos Passos Sugeridos:**
+*   Implementar testes A/B para campanhas de marketing direcionadas a cada cluster.
+*   Monitorar a migraþÒo de clientes entre clusters ao longo do tempo (Anßlise de Churn e LTV).
+*   Integrar este modelo em um pipeline de produþÒo para rotulagem automßtica de novos clientes.
+
+Com esta anßlise, a empresa deixa de tratar sua base como uma massa uniforme e passa a ter uma visÒo granular, orientada a dados, para cada tipo de consumidor.
+---
+### ExportaþÒo do Modelo
+Salvando o modelo treinado e o escalonador para uso futuro em produþÒo.
+---
+### Exemplo de Caso de Uso (ProduþÒo)
+SimulaþÒo de como utilizar os arquivos exportados para classificar um novo cliente que entra na base.
