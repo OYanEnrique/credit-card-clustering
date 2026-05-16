@@ -29,7 +29,9 @@ Este repositório documenta a evolução da análise de ponta a ponta, começand
 
 ## 🔎 1. Limpeza de Dados e Testes de Hipóteses
 
-Antes de aplicar qualquer algoritmo avançado, foi fundamental compreender o comportamento oculto nos dados. Realizamos testes estatísticos para validar algumas crenças comuns do mercado financeiro e garantir que nossas premissas faziam sentido. Foram testadas três grandes hipóteses:
+Antes de aplicar qualquer algoritmo avançado, foi fundamental preparar a base e compreender o comportamento oculto nos dados. O primeiro passo da **Limpeza de Dados** envolveu o tratamento de valores nulos (missing values). Para garantir que a distribuição original não fosse distorcida por métricas sensíveis a *outliers* no preenchimento dessas lacunas, optamos pela **imputação estatística utilizando a mediana** das respectivas colunas.
+
+Com a base tratada, realizamos testes estatísticos para validar algumas crenças comuns do mercado financeiro e garantir que nossas premissas faziam sentido. Para garantir rigor científico, adotamos o padrão de **5% de significância (p-value < 0.05)** para definir se rejeitaríamos ou não a hipótese nula em todos os testes. Foram avaliadas três grandes hipóteses:
 
 * 📊 **Hipótese 1: Pagamento Integral vs. Limite de Crédito**  
   Buscamos entender se o limite de crédito fornecido é influenciado pelo fato de o cliente quitar a fatura.
@@ -64,9 +66,11 @@ Antes de aplicar qualquer algoritmo avançado, foi fundamental compreender o com
 
 Ao lidar com algoritmos de clusterização que dependem do cálculo espacial entre variáveis (como o KMeans), **colinearidade** (variáveis que medem a mesma coisa) pode distorcer severamente os agrupamentos. O modelo acabaria dando um "peso duplo" para comportamentos redundantes.
 
-Para combater isso, geramos Matrizes de Correlação e analisamos a relação cruzada de todos os atributos financeiros. Identificamos as redundâncias e removemos variáveis sobrepostas para manter o sinal limpo e evitar viés.
+Para combater isso, geramos a primeira Matriz de Correlação e analisamos a relação cruzada de todos os atributos financeiros. O primeiro passo foi identificar as redundâncias e remover as variáveis sobrepostas (como pares com 100% de correlação) para manter o sinal limpo e evitar viés geométrico, o que resultou na nossa segunda matriz.
 
-Abaixo, a evolução visual que comprova a limpeza das correlações perfeitas ao longo do refinamento do conjunto de dados, demonstrando o cuidado antes de seguir para a modelagem:
+Em seguida, aplicamos técnicas de **Feature Engineering** para criar novos indicadores mais robustos a partir dos dados originais. Como novas features sempre correm o risco de reintroduzir colinearidade indesejada, geramos e validamos a terceira e definitiva matriz de correlação.
+
+Abaixo, a evolução visual que comprova o refinamento e a limpeza matemática do conjunto de dados ao longo dessas etapas, demonstrando o cuidado extremo antes de seguir para a modelagem:
 
 <p align="center">
   <img src="assets/matriz_corr_1.png" alt="Matriz de Correlação Inicial" width="400"/>
