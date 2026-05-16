@@ -9,6 +9,7 @@
   ![Scikit-Learn](https://img.shields.io/badge/scikit--learn-F7931E?style=flat&logo=scikit-learn)
   ![SHAP](https://img.shields.io/badge/Explainable%20AI-SHAP-brightgreen)
   ![Optuna](https://img.shields.io/badge/Hyperparameter%20Optimization-Optuna-blue)
+  [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-API%20Deploy-ffcc66)](https://huggingface.co/spaces/YanEnrique/credit-card-segmentation-api)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 </div>
 
@@ -175,6 +176,8 @@ Esta jornada deixou claro que tratar uma base de milhões de cartões como uma "
 
 ### Preparação para Produção
 O modelo não ficou no campo teórico. Encapsulamos os objetos do pipeline de clusterização, salvando o modelo treinado e o pré-processador de escalas como arquivos seriais práticos (`.joblib`). O fluxo culmina em uma demonstração de ponta a ponta que recebe a matriz de hábitos de um cliente fictício, normaliza os valores na mesma grandeza do modelo treinado, e retorna instantaneamente qual das **6 personas** ele pertence (Inferência em Produção).
+
+**🚀 Teste ao vivo:** Você pode interagir com o modelo em produção e realizar segmentações em tempo real através da nossa API implantada no Hugging Face Spaces: [Credit Card Segmentation API](https://huggingface.co/spaces/YanEnrique/credit-card-segmentation-api).
 
 ### Próximos Passos Sugeridos
 - **Marketing Direcionado**: Enviar propagandas de parcelamento vantajoso apenas para o *Comprador Ativo*, e isenções para o *Cliente Veterano*.
