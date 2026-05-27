@@ -21,7 +21,7 @@ Empresas financeiras e administradoras de cartão de crédito gerenciam bases co
 
 As aplicações de negócio (o "para quê") são diretas e impactantes:
 1. **Entender o Perfil de Consumo:** Diferenciar o cliente que usa o cartão para compras diárias do cliente que o usa como linha de crédito de emergência.
-2. **Gestão de Risco Inteligente:** Identificar grupos específicos com alta utilização de limite, porém baixas taxas de pagamento (maior risco de inadimplência).
+2. **Gestão de Risco Inteligente:** Identificar grupos específicos com alta utilização de limite, porém baixas taxas de pagamento (maior risco de inadimplência). Na teoria financeira, o perfilamento estatístico atua no controle de risco ao transformar o comportamento histórico em previsibilidade. Ao modelar matematicamente as propensões de gasto e pagamento, a instituição substitui a análise reativa por ações mitigatórias proativas, como ajustes dinâmicos de limite e políticas de cobrança antecipada, protegendo a liquidez da carteira antes que a inadimplência ocorra.
 3. **Estratégias de Marketing Personalizadas:** Adequar a comunicação, ofertas de aumento de limite e programas de pontos à necessidade real de cada segmento.
 
 Este repositório documenta a evolução da análise de ponta a ponta, começando pela limpeza e validação estatística dos dados brutos, passando pelo treinamento de Inteligência Artificial e culminando em insights acionáveis prontos para produção.
